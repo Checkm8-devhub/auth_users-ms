@@ -52,12 +52,21 @@ public class UsersResource {
 
     @GET
     @Path("{sub}")
-    @RolesAllowed({"user", "admin"})
+    @RolesAllowed("admin")
     public Response get(@PathParam("sub") String sub) {
 
-        if (!jwt.getSubject().equals(sub) && !jwt.getGroups().contains("admin")) Response.status(Response.Status.FORBIDDEN).build();
         User user = usersBean.get(sub);
         if (user == null) return Response.status(Response.Status.NOT_FOUND).build();
+
+        return Response.ok(user).build();
+    }
+
+    @GET
+    @Path("me")
+    public Response get() {
+
+        User user = usersBean.get(jwt.getSubject());
+        if (user == null) Response.status(Response.Status.NOT_FOUND).build();
 
         return Response.ok(user).build();
     }
@@ -78,10 +87,9 @@ public class UsersResource {
     // ****************************************
     @PUT
     @Path("{sub}")
-    @RolesAllowed({"user", "admin"})
+    @RolesAllowed("admin")
     public Response update(@PathParam("sub") String sub, User user) {
 
-        if (!jwt.getSubject().equals(sub) && !jwt.getGroups().contains("admin")) Response.status(Response.Status.UNAUTHORIZED).build();
         User oldUser = usersBean.get(sub);
         if (oldUser == null) return Response.status(Response.Status.NOT_FOUND).build();
 
@@ -95,11 +103,20 @@ public class UsersResource {
     // ****************************************
     @DELETE
     @Path("{sub}")
-    @RolesAllowed({"user", "admin"})
+    @RolesAllowed("admin")
     public Response delete(@PathParam("sub") String sub) {
 
         boolean deleted = usersBean.delete(sub);
-        if (!jwt.getSubject().equals(sub) && !jwt.getGroups().contains("admin")) Response.status(Response.Status.UNAUTHORIZED).build();
+
+        if (deleted) return Response.noContent().build();
+        else         return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @DELETE
+    @Path("me")
+    public Response deleteMe() {
+
+        boolean deleted = usersBean.delete(jwt.getSubject());
 
         if (deleted) return Response.noContent().build();
         else         return Response.status(Response.Status.NOT_FOUND).build();
