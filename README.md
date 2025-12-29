@@ -15,7 +15,7 @@ docker start checkm8_keycloak
 
 ## REGISTRATION
 ```
-http://localhost:8083/realms/auth/protocol/openid-connect/registrations?client_id=main_client&response_type=code
+http://localhost:8083/realms/auth/protocol/openid-connect/registrations?client_id=main_client&response_type=code&redirect_uri=<redirect_url>
 ```
 
 ## LOGIN
@@ -38,6 +38,20 @@ curl -X POST "http://localhost:8083/realms/auth/protocol/openid-connect/token" \
 ## ACCOUNT
 ```
 http://localhost:8083/realms/auth/account
+```
+
+## SETUP for service->service
+- create realm role
+- create client (client auth + service accounts roles) - different type of client (acts as a account basically)
+- see credential (client -> \<new_client\> -> credentials -> client secret) (u can also regenerate in case of a leak)
+- add \<new_role\> to this client (client -> \<new_client\> -> service accounts roles)
+- get JWT token for this client with:
+```
+curl -X POST "http://localhost:8083/realms/auth/protocol/openid-connect/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials" \
+  -d "client_id=matchmaking_client" \
+  -d "client_secret=<client_secret>"
 ```
 
 # ```/users```

@@ -52,7 +52,7 @@ public class UsersResource {
 
     @GET
     @Path("{sub}")
-    @RolesAllowed("admin")
+    @RolesAllowed({ "admin", "matchmaking"})
     public Response get(@PathParam("sub") String sub) {
 
         User user = usersBean.get(sub);
