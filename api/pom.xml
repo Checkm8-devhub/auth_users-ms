@@ -55,6 +55,12 @@
           <artifactId>quarkus-oidc</artifactId>
         </dependency>
 
+        <!-- Health -->
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-smallrye-health</artifactId>
+        </dependency>
+
         <!-- modules -->
         <dependency>
             <groupId>com.checkm8.auth.users.ms</groupId>
