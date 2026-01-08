@@ -27,7 +27,7 @@ import com.checkm8.auth.users.ms.beans.UsersBean;
 @Path("users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@RolesAllowed({"user", "admin"})
+@RolesAllowed({"user", "admin", "matchmaking"})
 public class UsersResource {
 
     @Context

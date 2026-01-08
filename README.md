@@ -7,10 +7,10 @@
 
 ## DEV
 ```
-docker run -p 127.0.0.1:8083:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin --name checkm8_keycloak quay.io/keycloak/keycloak start-dev
+docker run -p 127.0.0.1:8083:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin --name checkm8-keycloak --network checkm8-network quay.io/keycloak/keycloak start-dev
 ```
 ```
-docker start checkm8_keycloak
+docker start checkm8-keycloak
 ```
 
 ## REGISTRATION
