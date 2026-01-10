@@ -3,6 +3,9 @@ package com.checkm8.auth.users.ms.api.v1.resources;
 import java.util.List;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -44,6 +47,11 @@ public class UsersResource {
     // ****************************************
     @GET
     @RolesAllowed("admin")
+    @Operation(summary = "List all users", description = "Admin-only.")
+    @APIResponse(
+      responseCode = "200",
+      description = "List of users"
+    )
     public Response getAll() {
 
         List<User> users = usersBean.getAll();
@@ -53,6 +61,14 @@ public class UsersResource {
     @GET
     @Path("{sub}")
     @RolesAllowed({ "admin", "matchmaking"})
+    @Operation(summary = "Get user by subject (sub)", description = "Admin or matchmaking.")
+    @APIResponses({
+      @APIResponse(
+        responseCode = "200",
+        description = "User"
+      ),
+      @APIResponse(responseCode = "404", description = "User not found")
+    })
     public Response get(@PathParam("sub") String sub) {
 
         User user = usersBean.get(sub);
@@ -63,6 +79,14 @@ public class UsersResource {
 
     @GET
     @Path("me")
+    @Operation(summary = "Get current user (me)", description = "Uses JWT subject.")
+    @APIResponses({
+      @APIResponse(
+        responseCode = "200",
+        description = "User"
+      ),
+      @APIResponse(responseCode = "404", description = "User not found")
+    })
     public Response get() {
 
         User user = usersBean.get(jwt.getSubject());
@@ -75,6 +99,12 @@ public class UsersResource {
     //  POST
     // ****************************************
     @POST
+    @Operation(summary = "Create current user", description = "Creates a user using JWT subject. Returns 201 on success.")
+    @APIResponses({
+      @APIResponse(responseCode = "201", description = "Created"),
+      @APIResponse(responseCode = "401", description = "Unauthorized"),
+      @APIResponse(responseCode = "403", description = "Forbidden")
+    })
     public Response create() {
 
         usersBean.create(jwt.getSubject());
@@ -88,6 +118,14 @@ public class UsersResource {
     @PUT
     @Path("{sub}")
     @RolesAllowed("admin")
+    @Operation(summary = "Update user", description = "Admin-only.")
+    @APIResponses({
+      @APIResponse(
+        responseCode = "200",
+        description = "Updated user"
+      ),
+      @APIResponse(responseCode = "404", description = "User not found")
+    })
     public Response update(@PathParam("sub") String sub, User user) {
 
         User oldUser = usersBean.get(sub);
@@ -104,6 +142,11 @@ public class UsersResource {
     @DELETE
     @Path("{sub}")
     @RolesAllowed("admin")
+    @Operation(summary = "Delete user by subject (sub)", description = "Admin-only.")
+    @APIResponses({
+      @APIResponse(responseCode = "204", description = "Deleted"),
+      @APIResponse(responseCode = "404", description = "User not found")
+    })
     public Response delete(@PathParam("sub") String sub) {
 
         boolean deleted = usersBean.delete(sub);
@@ -114,6 +157,11 @@ public class UsersResource {
 
     @DELETE
     @Path("me")
+    @Operation(summary = "Delete current user (me)", description = "Deletes the user identified by JWT subject.")
+    @APIResponses({
+      @APIResponse(responseCode = "204", description = "Deleted"),
+      @APIResponse(responseCode = "404", description = "User not found")
+    })
     public Response deleteMe() {
 
         boolean deleted = usersBean.delete(jwt.getSubject());
